@@ -2,8 +2,11 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { map } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { map, take } from 'rxjs';
 import { Usuario } from 'src/models/user';
+import { appReducers, AppState } from '../app.reducer';
+import * as authActions from '../auth/auth.actions';
 export interface UserInterface {
   nombre: string;
   correo: string;
@@ -13,15 +16,33 @@ export interface UserInterface {
   providedIn: 'root',
 })
 export class AuthService {
+  public user!: Usuario;
   constructor(
     private auth: AngularFireAuth,
     private roter: Router,
-    private firestore: AngularFirestore
+    private firestore: AngularFirestore,
+    private store: Store<AppState>
   ) {}
 
   initAuthListener() {
     this.auth.authState.subscribe((fireBaseUser) => {
-      console.log(fireBaseUser?.email, fireBaseUser?.uid);
+      console.log(fireBaseUser);
+      if (fireBaseUser !== null) {
+        this.firestore
+          .doc(`${fireBaseUser.uid}/usuario`)
+          .valueChanges()
+          .pipe(take(1))
+          .subscribe((fireSotoreUser: any) => {
+            console.log(fireSotoreUser);
+
+            const user = Usuario.fromFirebase(fireSotoreUser);
+            this.store.dispatch(authActions.setUser({ user }));
+          });
+      } else {
+        console.log('no existe');
+
+        this.store.dispatch(authActions.unSetUser());
+      }
     });
   }
 
@@ -33,7 +54,7 @@ export class AuthService {
       .then(({ user }): any => {
         if (user) {
           const newUser = new Usuario(user.uid, userData.nombre, user.email);
-          return this.firestore.doc(`${user.uid}/usuario`).set({...newUser});
+          return this.firestore.doc(`${user.uid}/usuario`).set({ ...newUser });
         }
       });
   }
