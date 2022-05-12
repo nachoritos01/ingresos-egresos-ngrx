@@ -16,7 +16,7 @@ export interface UserInterface {
   providedIn: 'root',
 })
 export class AuthService {
-  public user!: Usuario;
+  private _user: Usuario | undefined;
   constructor(
     private auth: AngularFireAuth,
     private roter: Router,
@@ -24,23 +24,24 @@ export class AuthService {
     private store: Store<AppState>
   ) {}
 
+  get user() {
+    return {... this._user}
+  }
+
   initAuthListener() {
     this.auth.authState.subscribe((fireBaseUser) => {
-      console.log(fireBaseUser);
       if (fireBaseUser !== null) {
         this.firestore
           .doc(`${fireBaseUser.uid}/usuario`)
           .valueChanges()
           .pipe(take(1))
           .subscribe((fireSotoreUser: any) => {
-            console.log(fireSotoreUser);
-
             const user = Usuario.fromFirebase(fireSotoreUser);
+            this._user = user;
             this.store.dispatch(authActions.setUser({ user }));
           });
       } else {
-        console.log('no existe');
-
+        this._user= undefined;
         this.store.dispatch(authActions.unSetUser());
       }
     });

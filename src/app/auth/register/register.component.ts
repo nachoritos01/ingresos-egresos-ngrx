@@ -48,7 +48,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.authService
       .crearUsuario(this.forma.value)
       .then((response) => {
-        console.log(response);
         this.store.dispatch(ui.stopLoading());
         this.router.navigate(['/']);
       })
