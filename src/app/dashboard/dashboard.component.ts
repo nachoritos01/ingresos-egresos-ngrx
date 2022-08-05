@@ -3,6 +3,8 @@ import { Store } from '@ngrx/store';
 import { filter, Subscription } from 'rxjs';
 import { AppState } from '../app.reducer';
 import { IngresoEgresoService } from '../services/ingreso-egreso.service';
+import { IngresoEgreso } from '../../models/ingreso-egreso';
+import { setItems } from '../ingreso-egreso/ingreso-egreso.actions';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,12 +13,14 @@ import { IngresoEgresoService } from '../services/ingreso-egreso.service';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   unserSubs!: Subscription;
+  ingresosSubs!: Subscription;
   constructor(
     private store: Store<AppState>,
     private ingresoEgresoService: IngresoEgresoService
   ) {}
   ngOnDestroy(): void {
     this.unserSubs.unsubscribe();
+    this.ingresosSubs.unsubscribe();
   }
 
   ngOnInit() {
@@ -27,9 +31,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
           return auth.user != null;
         })
       )
-      .subscribe(({user}) => {
-        console.log(user?.uid);
-        this.ingresoEgresoService.initIngresosEgresosListener(user?.uid || '')
+      .subscribe(({ user }) => {
+        this.ingresosSubs = this.ingresoEgresoService
+          .initIngresosEgresosListener(user?.uid || '')
+          .subscribe((ingresosEgresos) => {
+            this.store.dispatch(setItems({ items: ingresosEgresos }));
+          });
       });
   }
 }

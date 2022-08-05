@@ -7,6 +7,7 @@ import { map, take } from 'rxjs';
 import { Usuario } from 'src/models/user';
 import { appReducers, AppState } from '../app.reducer';
 import * as authActions from '../auth/auth.actions';
+import * as ingresoEgresoActions from '../ingreso-egreso/ingreso-egreso.actions';
 export interface UserInterface {
   nombre: string;
   correo: string;
@@ -41,8 +42,10 @@ export class AuthService {
             this.store.dispatch(authActions.setUser({ user }));
           });
       } else {
+        // no existe
         this._user= undefined;
         this.store.dispatch(authActions.unSetUser());
+        this.store.dispatch(ingresoEgresoActions.unSetItems())
       }
     });
   }

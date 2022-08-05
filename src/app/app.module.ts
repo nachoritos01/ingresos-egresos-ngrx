@@ -26,6 +26,7 @@ import { provideAnalytics,getAnalytics,ScreenTrackingService,UserTrackingService
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { appReducers } from './app.reducer';
+import { OrderIngrespPipe } from './pipes/order-ingresp.pipe';
 //import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 /* import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideDatabase,getDatabase } from '@angular/fire/database';
@@ -49,7 +50,8 @@ import { provideStorage,getStorage } from '@angular/fire/storage'; */
     DetalleComponent,
     FooterComponent,
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent,
+    OrderIngrespPipe
   ],
   imports: [
     BrowserModule,

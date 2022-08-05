@@ -27,9 +27,15 @@ export class IngresoEgresoService {
         tipo,
       });
   }
-
+  
+  /**
+   * Este método es un observable que estara pendiente de
+   * los cambios
+   * @param uid 
+   * @returns 
+   */
   initIngresosEgresosListener(uid: string) {
-    this.firestore
+    return this.firestore
       .collection(`${uid}/ingresos-egresos/items`)
       .snapshotChanges()
       .pipe(
@@ -39,7 +45,12 @@ export class IngresoEgresoService {
             ...(doc.payload.doc.data() as any),
           }))
         )
-      )
-      .subscribe(console.log);
+      );
+      //.subscribe(console.log);
+  }
+
+  borrarIngresoEgreso( uidItem:string) {
+    const uidUser = this.authService.user.uid;
+    return this.firestore.doc(`${uidUser}/ingresos-egresos/items/${uidItem}`).delete();
   }
 }
