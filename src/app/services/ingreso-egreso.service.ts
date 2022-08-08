@@ -17,6 +17,7 @@ export class IngresoEgresoService {
   crearIngresoEgreso(ingresoEgreso: IngresoEgreso) {
     const { uid } = this.authService.user;
     const { descripcion, monto, tipo } = ingresoEgreso;
+    //Fallaba en firebase por que el uid esta como indefinido  
 
     return this.firestore
       .doc(`${uid}/ingresos-egresos`)
