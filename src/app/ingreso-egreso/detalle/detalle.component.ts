@@ -5,6 +5,7 @@ import { IngresoEgreso } from 'src/models/ingreso-egreso';
 import { Subscription } from 'rxjs';
 import { IngresoEgresoService } from '../../services/ingreso-egreso.service';
 import Swal from 'sweetalert2';
+import { AppStateWhitIngresoEgreso } from '../ingreso-egreso.reducer';
 
 @Component({
   selector: 'app-detalle',
@@ -12,11 +13,11 @@ import Swal from 'sweetalert2';
   styles: [],
 })
 export class DetalleComponent implements OnInit, OnDestroy {
-  ingresoEgreso!: any;
   ingresoIngresoSubs!: Subscription;
+  ingresoEgreso: any;
 
   constructor(
-    private store: Store<AppState>,
+    private store: Store<AppStateWhitIngresoEgreso>,
     private ingresoEgresoService: IngresoEgresoService
   ) {}
   ngOnDestroy(): void {
@@ -36,7 +37,7 @@ export class DetalleComponent implements OnInit, OnDestroy {
    * @param uuid
    */
   borrar(uuid: string | undefined) {
-    if(uuid === undefined ) return;
+    if (uuid === undefined) return;
     console.log(uuid);
     this.ingresoEgresoService
       .borrarIngresoEgreso(uuid)
