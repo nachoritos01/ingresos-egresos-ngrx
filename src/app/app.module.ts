@@ -31,6 +31,7 @@ import { providePerformance,getPerformance } from '@angular/fire/performance';
 import { provideRemoteConfig,getRemoteConfig } from '@angular/fire/remote-config';
 import { provideStorage,getStorage } from '@angular/fire/storage'; */
 import { AuthModule } from './auth/auth.module';
+import { APP_BASE_HREF } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent],
@@ -39,7 +40,7 @@ import { AuthModule } from './auth/auth.module';
     AppRoutingModule,
 
     AuthModule,
-    
+
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
@@ -61,7 +62,11 @@ import { AuthModule } from './auth/auth.module';
     provideRemoteConfig(() => getRemoteConfig()),
     provideStorage(() => getStorage()) */
   ],
-  providers: [ScreenTrackingService, UserTrackingService],
+  providers: [
+    { provide: APP_BASE_HREF, useValue: '/' },
+    ScreenTrackingService,
+    UserTrackingService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
